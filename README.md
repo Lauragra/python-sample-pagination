@@ -67,7 +67,7 @@ The [pagination.py](https://github.com/microsoftgraph/python-sample-pagination/b
 
 1. At the command prompt: ```python pagination.py```
 2. In your browser, go to [http://localhost:5000](http://localhost:5000).
-3. Choose **Connect** and authenticate with a Microsoft identity (organization account or Microsoft account).
+3. Choose **Connect** and authenticate with a Microsoft identity (work or school account or Microsoft account).
 
 You'll then see the following page listing your most recent 10 messages:
 
@@ -95,19 +95,19 @@ As a best practice, your code should allow for the fact that ```@odata.nextLink`
 
 ## Using generators
 
-The Microsoft Graph API returns _pages_ of results, as demonstrated in [pagination.py](https://github.com/microsoftgraph/python-sample-pagination/blob/master/pagination.py). But in your application or service, you may want to work with a single non-paginated collection of _items_ such as messages, users, or files. In this sample, we create a Python [generator](https://wiki.python.org/moin/Generators) that hides the pagination details so that your application code can simply ask for a collection of messages and then iterate through them using standard Python idioms such as ```for messages in messages``` or ```next(message)```.
+The Microsoft Graph API returns _pages_ of results, as demonstrated in [pagination.py](https://github.com/microsoftgraph/python-sample-pagination/blob/master/pagination.py). But in your application or service, you might want to work with a single non-paginated collection of _items_ such as messages, users, or files. This sample creates a Python [generator](https://wiki.python.org/moin/Generators) that hides the pagination details so that your application code can simply ask for a collection of messages and then iterate through them using standard Python idioms such as ```for messages in messages``` or ```next(message)```.
 
-The [generator.py](https://github.com/microsoftgraph/python-sample-pagination/blob/master/generator.py) sample in this repo provides an interactive demonstration of how it works. Follow the [Installation](#installation) instructions to install the sample, and then run it as follows:
+The [generator.py](https://github.com/microsoftgraph/python-sample-pagination/blob/master/generator.py) sample in this repo provides an interactive demonstration of how it works. Follow the [Installation](#installation) instructions to install the sample, and then do the following to run it:
 
 1. At the command prompt: ```python generator.py```
-2. Navigate a browser to [http://localhost:5000](http://localhost:5000)
-3. Choose **Connect** and authenticate with a Microsoft identity (organization account or Microsoft Account)
+2. In your browser, go to [http://localhost:5000](http://localhost:5000).
+3. Choose **Connect** and authenticate with a Microsoft identity (work or school account or Microsoft account).
 
 You'll then see the most recent message you've received:
 
 ![most recent message](static/images/generator-sample.png)
 
-Each time you click the **Next Message** button, you'll see the next message. The ```generator()``` function in [generator.py](https://github.com/microsoftgraph/python-sample-pagination/blob/master/generator.py) handles the details as shown here:
+Each time you choose **Next Message**, you'll see the next message. The ```generator()``` function in [generator.py](https://github.com/microsoftgraph/python-sample-pagination/blob/master/generator.py) handles the details, as shown.
 
 ```python
 def graph_generator(session, endpoint=None):
@@ -124,15 +124,15 @@ def graph_generator(session, endpoint=None):
         endpoint = response.get('@odata.nextLink', None)
 ```
 
-The key concept to understand in a Python generator is the ```yield``` statement, which returns a value but also retains the state of the generator function for the next call. We have an outer loop that steps through the paginated results (```while endpoint:```) and an inner loop (```for item in ...```) that returns the items from within each page.
+The key concept to understand in a Python generator is the ```yield``` statement, which returns a value but also retains the state of the generator function for the next call. An outer loop steps through the paginated results (```while endpoint:```) and an inner loop (```for item in ...```) returns the items from within each page.
 
-To create a generator at runtime, we pass the Graph session connection object and the API endpoint for retrieving messages:
+To create a generator at runtime, pass the Microsoft Graph session connection object and the API endpoint for retrieving messages:
 
 ```python
 MSG_GENERATOR = messages(MSGRAPH, 'me/messages')
 ```
 
-Then the calling code simply uses Python's built-in ```next()``` function to retrieve messages:
+The calling code uses Python's built-in ```next()``` function to retrieve messages:
 
 ```python
 def generator():
@@ -140,9 +140,9 @@ def generator():
     return {'graphdata': next(MSG_GENERATOR)}
 ```
 
-We call ```next(MSG_GENERATOR)``` whenever we need the next message, and we don't need to be aware of the fact that paginated results are coming from Graph. As a practical matter, you may notice a slightly longer response time whenever a new page is retrieved (every 10th message, with the default page size of 10 messages in the sample), but the individual items within each page are returned immediately without any need to call Graph, because they're in the page of results that is being retained in the state of the generator function after each ```yield``` statement.
+Call ```next(MSG_GENERATOR)``` whenever you need the next message, and you don't need to be aware of the fact that paginated results are coming from Microsoft Graph. You might notice a slightly longer response time whenever a new page is retrieved (every 10th message, with the default page size of 10 messages in the sample), but the individual items within each page are returned immediately without any need to call Microsoft Graph, because they're in the page of results that is being retained in the state of the generator function after each ```yield``` statement.
 
-Python generators are recommended for working with all paginated results from Microsoft Graph. You can use the ```generator()``` function in this sample for users, groups, drive items, and other paginated responses from Graph APIs.
+Python generators are recommended for working with all paginated results from Microsoft Graph. You can use the ```generator()``` function in this sample for users, groups, drive items, and other paginated responses from Microsoft Graph APIs.
 
 ## Contributing
 
